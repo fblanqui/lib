@@ -1,8 +1,8 @@
 // Booleans
 
-require open Stdlib.Set Stdlib.Prop Stdlib.FOL;
+require open Stdlib.Set Stdlib.Prop Stdlib.FOL Stdlib.Eq;
 
-inductive 𝔹 : TYPE ≔
+inductive 𝔹 : TYPE ≔ // \BbbB
 | true : 𝔹
 | false : 𝔹;
 
@@ -11,6 +11,28 @@ inductive 𝔹 : TYPE ≔
 constant symbol bool : Set;
 
 rule τ bool ↪ 𝔹;
+
+// Injection in Prop
+
+symbol is_true : 𝔹 → Prop;
+
+rule is_true true  ↪ ⊤
+with is_true false ↪ ⊥;
+
+symbol is_false : 𝔹 → Prop;
+
+rule is_false true  ↪ ⊥
+with is_false false ↪ ⊤;
+
+// Discriminate constructors
+
+symbol discr_false_true : π (false ≠ true) ≔
+begin
+  assume H;
+  have f : π (is_true false);
+  rewrite H; refine top;
+  refine ⊥ₑ _ f;
+end;
 
 // 𝔹oolean not
 
@@ -47,3 +69,4 @@ symbol if : 𝔹 → Π {a}, τ a → τ a → τ a;
 
 rule if true  $x _ ↪ $x
 with if false _ $y ↪ $y;
+
